@@ -1,0 +1,58 @@
+# ========== CONFIGURACIÓN Y CREDENCIALES ==========
+# Archivos con datos sensibles - NUNCA subir a GitHub
+config.php
+.env
+.env.local
+.env.*.local
+
+# ========== BASES DE DATOS ==========
+# Backups y dumps de BD que puedan contener datos reales
+*.sql
+*.backup
+*.bak
+*.gz
+
+# ========== ARCHIVOS DE SISTEMA ==========
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# ========== PHP ==========
+# Archivos temporales de PHP
+*.tmp
+*.temp
+*.log
+
+# Cache
+.cache/
+tmp/
+temp/
+
+# ========== IDEs Y EDITORES ==========
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# ========== COMPOSER ==========
+vendor/
+composer.lock
+
+# ========== NODE (si se agrega después) ==========
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# ========== ARCHIVOS DE PRUEBA ==========
+test_*.php
+*_test.php
+debug_*.php
+
+# ========== DOCUMENTACIÓN SENSIBLE ==========
+# Mantener solo documentación pública
+README_PRIVADO.md
+NOTAS_DESARROLLO.md
+CREDENCIALES.txt
+
