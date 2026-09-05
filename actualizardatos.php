@@ -1,10 +1,10 @@
 <?php
-require_once("config.php");
+require_once "config.php";
 
-// Conexión a la base de datos
-$conexion = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-if ($conexion->connect_error) {
-    die("Conexión fallida: " . $conexion->connect_error);
+try {
+    $pdo = getDbConnection();
+} catch (Throwable $e) {
+    die("Conexión fallida: " . $e->getMessage());
 }
 
 $mensaje = "";
@@ -12,51 +12,44 @@ $cliente = null;
 
 // 1. SI SE ENVIÓ EL FORMULARIO DE EDICIÓN (Guardar cambios)
 if (isset($_POST['btn_guardar'])) {
-    $cedula    = $_POST['cedula'];
+    $cedula    = trim($_POST['cedula']);
     $nombres   = $_POST['nombres'];
     $apellidos = $_POST['apellidos'];
     $direccion = $_POST['direccion'];
     $email     = $_POST['email'];
     $celular   = $_POST['celular'];
 
-    // Usar prepared statement para prevenir SQL Injection
     $sql_update = "UPDATE clientes SET 
-                    nombres = ?, 
-                    apellidos = ?, 
-                    direccion = ?, 
-                    email = ?, 
-                    celular = ? 
-                   WHERE cedula = ?";
-    
-    $stmt = $conexion->prepare($sql_update);
-    $stmt->bind_param("ssssss", $nombres, $apellidos, $direccion, $email, $celular, $cedula);
-    
-    if ($stmt->execute()) {
-        $mensaje = "<div class='alert alert-success'><strong>¡Datos actualizados correctamente!</strong></div>";
-    } else {
-        $mensaje = "<div class='alert alert-error'><strong>Error al actualizar:</strong> " . $stmt->error . "</div>";
-    }
-    $stmt->close();
+                    nombres = :nombres,
+                    apellidos = :apellidos,
+                    direccion = :direccion,
+                    email = :email,
+                    celular = :celular
+                   WHERE cedula = :cedula";
+
+    $stmt = $pdo->prepare($sql_update);
+    $stmt->execute([
+        ':nombres' => $nombres,
+        ':apellidos' => $apellidos,
+        ':direccion' => $direccion,
+        ':email' => $email,
+        ':celular' => $celular,
+        ':cedula' => $cedula,
+    ]);
+
+    $mensaje = "<div class='alert alert-success'><strong>¡Datos actualizados correctamente!</strong></div>";
 
     // Volver a cargar los datos actualizados para mostrarlos en el formulario
-    $sql_select = "SELECT * FROM clientes WHERE cedula = ?";
-    $stmt = $conexion->prepare($sql_select);
-    $stmt->bind_param("s", $cedula);
-    $stmt->execute();
-    $res = $stmt->get_result();
-    $cliente = $res->fetch_assoc();
-    $stmt->close();
+    $stmt = $pdo->prepare("SELECT * FROM clientes WHERE cedula = :cedula");
+    $stmt->execute([':cedula' => $cedula]);
+    $cliente = $stmt->fetch();
 } 
 // 2. SI SE LLEGA DESDE `ingresar_cedula2.php` (Buscar cliente a editar)
 else if (isset($_POST['cedula']) && !empty($_POST['cedula'])) {
-    $cedula = $_POST['cedula'];
-    $sql_select = "SELECT * FROM clientes WHERE cedula = ?";
-    $stmt = $conexion->prepare($sql_select);
-    $stmt->bind_param("s", $cedula);
-    $stmt->execute();
-    $res = $stmt->get_result();
-    $cliente = $res->fetch_assoc();
-    $stmt->close();
+    $cedula = trim($_POST['cedula']);
+    $stmt = $pdo->prepare("SELECT * FROM clientes WHERE cedula = :cedula");
+    $stmt->execute([':cedula' => $cedula]);
+    $cliente = $stmt->fetch();
 }
 ?>
 <!DOCTYPE html>

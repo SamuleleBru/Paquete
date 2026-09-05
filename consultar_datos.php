@@ -1,5 +1,5 @@
 <?php
-require_once("config.php");
+require_once "config.php";
 
 // Validar que se haya enviado una cédula
 if (!isset($_POST['cedula']) || empty($_POST['cedula'])) {
@@ -7,30 +7,23 @@ if (!isset($_POST['cedula']) || empty($_POST['cedula'])) {
     exit;
 }
 
-$cedula = $_POST['cedula'];
+$cedula = trim($_POST['cedula']);
 
-// Conexión a la base de datos
-$conexion = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-if ($conexion->connect_error) {
-    die("Conexión fallida: " . $conexion->connect_error);
+try {
+    $pdo = getDbConnection();
+
+    // 1. Consultar datos personales del cliente
+    $stmt = $pdo->prepare("SELECT * FROM clientes WHERE cedula = :cedula");
+    $stmt->execute([':cedula' => $cedula]);
+    $cliente = $stmt->fetch();
+
+    // 2. Consultar movimientos (pagos) del cliente
+    $stmt2 = $pdo->prepare("SELECT * FROM movimientos WHERE cedula = :cedula");
+    $stmt2->execute([':cedula' => $cedula]);
+    $movimientos = $stmt2->fetchAll();
+} catch (Throwable $e) {
+    die('Conexión fallida: ' . $e->getMessage());
 }
-
-// 1. Consultar datos personales del cliente
-$sql_cliente = "SELECT * FROM clientes WHERE cedula = ?";
-$stmt = $conexion->prepare($sql_cliente);
-$stmt->bind_param("s", $cedula);
-$stmt->execute();
-$res_cliente = $stmt->get_result();
-$cliente = $res_cliente->fetch_assoc();
-$stmt->close();
-
-// 2. Consultar movimientos (pagos) del cliente
-$sql_movimientos = "SELECT * FROM movimientos WHERE cedula = ?";
-$stmt = $conexion->prepare($sql_movimientos);
-$stmt->bind_param("s", $cedula);
-$stmt->execute();
-$res_movimientos = $stmt->get_result();
-$stmt->close();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -86,15 +79,15 @@ $stmt->close();
         </thead>
         <tbody>
         <?php 
-        if ($res_movimientos && $res_movimientos->num_rows > 0) {
-            while ($movimiento = $res_movimientos->fetch_assoc()) { 
+        if (!empty($movimientos)) {
+            foreach ($movimientos as $movimiento) {
         ?>
             <tr>
                 <td><?php echo htmlspecialchars($movimiento['valor_pagado'], ENT_QUOTES, 'UTF-8'); ?></td>
                 <td><?php echo htmlspecialchars($movimiento['fecha'], ENT_QUOTES, 'UTF-8'); ?></td>
             </tr>
         <?php 
-            } 
+            }
         } else { 
         ?>
             <tr>

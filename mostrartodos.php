@@ -1,14 +1,14 @@
 <?php
-require_once("config.php");
+require_once "config.php";
 
-// Conexión a la base de datos
-$conexion = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-if ($conexion->connect_error) {
-    die("Conexión fallida: " . $conexion->connect_error);
+try {
+    $pdo = getDbConnection();
+} catch (Throwable $e) {
+    die("Conexión fallida: " . $e->getMessage());
 }
 
-$sql = "SELECT * FROM clientes";
-$result = $conexion->query($sql);
+$stmt = $pdo->query("SELECT * FROM clientes");
+$result = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -34,7 +34,7 @@ $result = $conexion->query($sql);
                 </tr>
             </thead>
             <tbody>
-            <?php while ($row = $result->fetch_assoc()) { ?>
+            <?php foreach ($result as $row) { ?>
                 <tr>
                     <td><?php echo htmlspecialchars($row['cedula'], ENT_QUOTES, 'UTF-8'); ?></td>
                     <td><?php echo htmlspecialchars($row['nombres'], ENT_QUOTES, 'UTF-8'); ?></td>

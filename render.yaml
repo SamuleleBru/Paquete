@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: paquete
+    env: php
+    plan: free
+    buildCommand: "true"
+    startCommand: "apache2-foreground"
+    envVars:
+      - key: DATABASE_URL
+        scope: build

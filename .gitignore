@@ -1,6 +1,5 @@
 # ========== CONFIGURACIÓN Y CREDENCIALES ==========
-# Archivos con datos sensibles - NUNCA subir a GitHub
-config.php
+# Solo excluir .env, NO config.php (config.php debe subirse a Render)
 .env
 .env.local
 .env.*.local
@@ -55,4 +54,3 @@ debug_*.php
 README_PRIVADO.md
 NOTAS_DESARROLLO.md
 CREDENCIALES.txt
-
