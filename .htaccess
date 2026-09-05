@@ -1,0 +1,24 @@
+# Habilitar mod_rewrite
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Configurar la base de la aplicación (si está en un subdirectorio)
+    # RewriteBase /paquete/
+
+    # No reescribir si es un archivo real
+    RewriteCond %{REQUEST_FILENAME} !-f
+    # No reescribir si es un directorio real
+    RewriteCond %{REQUEST_FILENAME} !-d
+    # Reescribir todo lo demás a index.php preservando la query string
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>
+
+# Deshabilitar directory listing (seguridad)
+<IfModule mod_autoindex.c>
+    Options -Indexes
+</IfModule>
+
+# Establecer tipo de contenido por defecto
+<IfModule mod_mime.c>
+    AddType application/x-httpd-php .php
+</IfModule>
