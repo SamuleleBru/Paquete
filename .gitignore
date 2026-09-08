@@ -53,4 +53,4 @@ debug_*.php
 # Mantener solo documentación pública
 README_PRIVADO.md
 NOTAS_DESARROLLO.md
-CREDENCIALES.txt
+CREDENCIALES.txt        
