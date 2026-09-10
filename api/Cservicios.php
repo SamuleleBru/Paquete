@@ -8,17 +8,16 @@ class cCliente
         try {
             $pdo = getDbConnection();
 
-            $sql = "INSERT INTO clientes (cedula, nombres, apellidos, direccion, email, celular)
-                    VALUES (:cedula, :nombres, :apellidos, :direccion, :email, :celular)";
-
-            $stmt = $pdo->prepare($sql);
+            $stmt = $pdo->prepare(
+                "CALL registrar_cliente(:p_cedula, :p_nombres, :p_apellidos, :p_direccion, :p_email, :p_celular)"
+            );
             $stmt->execute([
-                ':cedula' => $cedula,
-                ':nombres' => $nombres,
-                ':apellidos' => $apellidos,
-                ':direccion' => $direccion,
-                ':email' => $email,
-                ':celular' => $celular,
+                ':p_cedula' => $cedula,
+                ':p_nombres' => $nombres,
+                ':p_apellidos' => $apellidos,
+                ':p_direccion' => $direccion,
+                ':p_email' => $email,
+                ':p_celular' => $celular,
             ]);
 
             return true;

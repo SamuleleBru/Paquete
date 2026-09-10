@@ -7,7 +7,7 @@ try {
     die("Conexión fallida: " . $e->getMessage());
 }
 
-$stmt = $pdo->query("SELECT * FROM clientes");
+$stmt = $pdo->query("SELECT * FROM obtener_todos_clientes()");
 $result = $stmt->fetchAll();
 ?>
 <!DOCTYPE html>

@@ -13,13 +13,13 @@ try {
     $pdo = getDbConnection();
 
     // 1. Consultar datos personales del cliente
-    $stmt = $pdo->prepare("SELECT * FROM clientes WHERE cedula = :cedula");
-    $stmt->execute([':cedula' => $cedula]);
+    $stmt = $pdo->prepare("SELECT * FROM obtener_cliente(:p_cedula)");
+    $stmt->execute([':p_cedula' => $cedula]);
     $cliente = $stmt->fetch();
 
     // 2. Consultar movimientos (pagos) del cliente
-    $stmt2 = $pdo->prepare("SELECT * FROM movimientos WHERE cedula = :cedula");
-    $stmt2->execute([':cedula' => $cedula]);
+    $stmt2 = $pdo->prepare("SELECT * FROM obtener_movimientos_cliente(:p_cedula)");
+    $stmt2->execute([':p_cedula' => $cedula]);
     $movimientos = $stmt2->fetchAll();
 } catch (Throwable $e) {
     die('Conexión fallida: ' . $e->getMessage());

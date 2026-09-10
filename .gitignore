@@ -7,6 +7,7 @@
 # ========== BASES DE DATOS ==========
 # Backups y dumps de BD que puedan contener datos reales
 *.sql
+!procedimientos.sql
 *.backup
 *.bak
 *.gz

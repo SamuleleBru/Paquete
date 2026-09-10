@@ -19,36 +19,30 @@ if (isset($_POST['btn_guardar'])) {
     $email     = $_POST['email'];
     $celular   = $_POST['celular'];
 
-    $sql_update = "UPDATE clientes SET 
-                    nombres = :nombres,
-                    apellidos = :apellidos,
-                    direccion = :direccion,
-                    email = :email,
-                    celular = :celular
-                   WHERE cedula = :cedula";
-
-    $stmt = $pdo->prepare($sql_update);
+    $stmt = $pdo->prepare(
+        "CALL actualizar_cliente(:p_cedula, :p_nombres, :p_apellidos, :p_direccion, :p_email, :p_celular)"
+    );
     $stmt->execute([
-        ':nombres' => $nombres,
-        ':apellidos' => $apellidos,
-        ':direccion' => $direccion,
-        ':email' => $email,
-        ':celular' => $celular,
-        ':cedula' => $cedula,
+        ':p_nombres' => $nombres,
+        ':p_apellidos' => $apellidos,
+        ':p_direccion' => $direccion,
+        ':p_email' => $email,
+        ':p_celular' => $celular,
+        ':p_cedula' => $cedula,
     ]);
 
     $mensaje = "<div class='alert alert-success'><strong>¡Datos actualizados correctamente!</strong></div>";
 
     // Volver a cargar los datos actualizados para mostrarlos en el formulario
-    $stmt = $pdo->prepare("SELECT * FROM clientes WHERE cedula = :cedula");
-    $stmt->execute([':cedula' => $cedula]);
+    $stmt = $pdo->prepare("SELECT * FROM obtener_cliente(:p_cedula)");
+    $stmt->execute([':p_cedula' => $cedula]);
     $cliente = $stmt->fetch();
 } 
 // 2. SI SE LLEGA DESDE `ingresar_cedula2.php` (Buscar cliente a editar)
 else if (isset($_POST['cedula']) && !empty($_POST['cedula'])) {
     $cedula = trim($_POST['cedula']);
-    $stmt = $pdo->prepare("SELECT * FROM clientes WHERE cedula = :cedula");
-    $stmt->execute([':cedula' => $cedula]);
+    $stmt = $pdo->prepare("SELECT * FROM obtener_cliente(:p_cedula)");
+    $stmt->execute([':p_cedula' => $cedula]);
     $cliente = $stmt->fetch();
 }
 ?>
