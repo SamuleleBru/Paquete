@@ -1,0 +1,18 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/*.php": { "runtime": "vercel-php@0.9.0" }
+  },
+  "rewrites": [
+    { "source": "/", "destination": "/api/index.php" },
+    { "source": "/index.php", "destination": "/api/index.php" },
+    { "source": "/recibe_datos.php", "destination": "/api/recibe_datos.php" },
+    { "source": "/consultar_datos.php", "destination": "/api/consultar_datos.php" },
+    { "source": "/actualizardatos.php", "destination": "/api/actualizardatos.php" },
+    { "source": "/mostrartodos.php", "destination": "/api/mostrartodos.php" },
+    { "source": "/ingresar_cedula.php", "destination": "/api/ingresar_cedula.php" },
+    { "source": "/ingresar_cedula2.php", "destination": "/api/ingresar_cedula2.php" },
+    { "source": "/registrardatos.php", "destination": "/api/registrardatos.php" },
+    { "source": "/Cservicios.php", "destination": "/api/Cservicios.php" }
+  ]
+}
